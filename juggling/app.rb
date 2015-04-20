@@ -1,7 +1,5 @@
-
-# needs heavy refactoring from lines 102-296 though i think it basically works?
 # this file uses full data
-
+# but can use any file given the proper/same formatting
 
 require 'pry'
 
@@ -76,7 +74,8 @@ def parse_data_file(file)
 	get_limit
 end
 
-def record_results(file)# write results to file
+# method to write results to file
+def record_results(file)
 	$circuits.each do |circuit|
 		File.open(file, "a") do |f|
 			f.puts "\n" + circuit.name
@@ -87,219 +86,60 @@ def record_results(file)# write results to file
 	end
 end
 
+# method to get the limit of jugglers on a team
 def get_limit
 	$limit = $jugglers.length / $circuits.length
 end
 
+# assign jugglers to teams
 def get_circuit_assignments(collection)
 	collection.map do |juggler|
 		circuit_prefs = []
-		# find the circuits each juggler prefers adn add it to the circuit_prefs array
+		# find the circuit objects each juggler prefers adn add it to the circuit_prefs array
 		juggler.prefs.each do |pref|
 			circuit_prefs.push($circuits.find{|x| x.name == pref})
 		end
 
-		# add jugglers to the circuit.jugglers
-		if circuit_prefs[0].jugglers.length >= 6
-			a=[]
-			circuit_prefs[0].jugglers.map do |player|
+		# combine juggler skills and the skills of each circuit
+		# jug_skills = juggler.coordination + juggler.endurance + juggler.pizzazz
+		skill_totals = []
+		circuit_prefs.each do |circuit|
+			skill_totals << circuit.circuit_stats
+		end
+
+		pref_num = 0
+		# while the juggler.circuit attribute is nil and their preference number is less than the amount theyve requested
+		while (juggler.circuit == nil) && (pref_num <= circuit_prefs.length)
+			if circuit_prefs[pref_num].jugglers.length >= $limit #if this circuit has reached its capacity, check if player is better than any of the current players in the circuit
+			a=[] #get the stats of the players in that circuit
+			circuit_prefs[pref_num].jugglers.map do |player|
 				a << player.player_stats
 			end
-			if juggler.player_stats > a.min
-				to_remove = circuit_prefs[0].jugglers.index{|x| x.player_stats == a.min}
-				add_back = circuit_prefs[0].jugglers.delete_at(to_remove)
-				collection.delete(collection.find{|x| x.name == add_back.name})
-				add_back.circuit = nil
-				collection.push(add_back)
-				puts "just killed someone"
-				circuit_prefs[0].jugglers.push(juggler)
-				juggler.circuit = circuit_prefs[0].name
-
-			elsif circuit_prefs[1].jugglers.length >= 6
-				a=[]
-				circuit_prefs[1].jugglers.map do |player|
-					a << player.player_stats
-				end 
-				if juggler.player_stats > a.min
-					to_remove = circuit_prefs[1].jugglers.index{|x| x.player_stats == a.min}
-					add_back = circuit_prefs[1].jugglers.delete_at(to_remove)
-					collection.delete(collection.find{|x| x.name == add_back.name})
-					add_back.circuit = nil
-					collection.push(add_back)
+				if juggler.player_stats > a.min #if the juggler's stats are better than the lowest in the circuit
+					to_remove = circuit_prefs[pref_num].jugglers.index{|x| x.player_stats == a.min} #find the index of the lowest to remove
+					add_back = circuit_prefs[pref_num].jugglers.delete_at(to_remove) #store the object of that player
+					collection.delete(collection.find{|x| x.name == add_back.name}) #remove it from the collection of all players
+					add_back.circuit = nil #change circuit attribute of that removed player to nil
+					collection.push(add_back) #add player back into colleciton so that it gets run and placed again
 					puts "just killed someone"
-					circuit_prefs[1].jugglers.push(juggler)
-					juggler.circuit = circuit_prefs[1].name
-
-				elsif circuit_prefs[2].jugglers.length >= 6
-					a=[]
-					circuit_prefs[2].jugglers.map do |player|
-						a << player.player_stats
-					end
-					if juggler.player_stats > a.min
-						to_remove = circuit_prefs[2].jugglers.index{|x| x.player_stats == a.min}
-						add_back = circuit_prefs[2].jugglers.delete_at(to_remove)
-						collection.delete(collection.find{|x| x.name == add_back.name})
-						add_back.circuit = nil
-						collection.push(add_back)
-						puts "just killed someone"
-						circuit_prefs[2].jugglers.push(juggler)
-						juggler.circuit = circuit_prefs[2].name
-
-					elsif circuit_prefs[3].jugglers.length >= 6
-						a=[]
-						circuit_prefs[3].jugglers.map do |player|
-							a << player.player_stats
-						end 
-						if juggler.player_stats > a.min
-							to_remove = circuit_prefs[3].jugglers.index{|x| x.player_stats == a.min}
-							add_back = circuit_prefs[3].jugglers.delete_at(to_remove)
-							collection.delete(collection.find{|x| x.name == add_back.name})
-							add_back.circuit = nil
-							collection.push(add_back)
-							puts "just killed someone"
-							circuit_prefs[3].jugglers.push(juggler)
-							juggler.circuit = circuit_prefs[3].name
-
-						elsif circuit_prefs[4].jugglers.length >= 6
-							a=[]
-							circuit_prefs[4].jugglers.map do |player|
-								a << player.player_stats
-							end 
-							if juggler.player_stats > a.min
-								to_remove = circuit_prefs[4].jugglers.index{|x| x.player_stats == a.min}
-								add_back = circuit_prefs[4].jugglers.delete_at(to_remove)
-								collection.delete(collection.find{|x| x.name == add_back.name})
-								add_back.circuit = nil
-								collection.push(add_back)
-								puts "just killed someone"
-								circuit_prefs[4].jugglers.push(juggler)
-								juggler.circuit = circuit_prefs[4].name
-
-							elsif circuit_prefs[5].jugglers.length >= 6
-								a=[]
-								circuit_prefs[5].jugglers.map do |player|
-									a << player.player_stats
-								end 
-								if juggler.player_stats > a.min
-									to_remove = circuit_prefs[5].jugglers.index{|x| x.player_stats == a.min}
-									add_back = circuit_prefs[5].jugglers.delete_at(to_remove)	
-									collection.delete(collection.find{|x| x.name == add_back.name})
-									add_back.circuit = nil
-									collection.push(add_back)
-									puts "just killed someone"
-									circuit_prefs[5].jugglers.push(juggler)
-									juggler.circuit = circuit_prefs[5].name
-
-								elsif circuit_prefs[6].jugglers.length >= 6
-									a=[]
-									circuit_prefs[6].jugglers.map do |player|
-										a << player.player_stats
-									end 
-									if juggler.player_stats > a.min
-										to_remove = circuit_prefs[6].jugglers.index{|x| x.player_stats == a.min}
-										add_back = circuit_prefs[6].jugglers.delete_at(to_remove)
-										collection.delete(collection.find{|x| x.name == add_back.name})
-										add_back.circuit = nil
-										collection.push(add_back)
-										puts "just killed someone"
-										circuit_prefs[6].jugglers.push(juggler)
-										juggler.circuit = circuit_prefs[6].name
-
-									elsif circuit_prefs[7].jugglers.length >= 6
-										a=[]
-										circuit_prefs[7].jugglers.map do |player|
-											a << player.player_stats
-										end 
-										if juggler.player_stats > a.min
-											to_remove = circuit_prefs[7].jugglers.index{|x| x.player_stats == a.min}
-											add_back = circuit_prefs[7].jugglers.delete_at(to_remove)
-											collection.delete(collection.find{|x| x.name == add_back.name})
-											add_back.circuit = nil
-											collection.push(add_back)
-											puts "just killed someone"
-											circuit_prefs[7].jugglers.push(juggler)
-											juggler.circuit = circuit_prefs[7].name		
-
-										elsif circuit_prefs[8].jugglers.length >= 6
-											a=[]
-											circuit_prefs[8].jugglers.map do |player|
-												a << player.player_stats
-											end 
-											if juggler.player_stats > a.min
-												to_remove = circuit_prefs[8].jugglers.index{|x| x.player_stats == a.min}
-												add_back = circuit_prefs[8].jugglers.delete_at(to_remove)
-												collection.delete(collection.find{|x| x.name == add_back.name})
-												add_back.circuit = nil
-												collection.push(add_back)
-												puts "just killed someone"
-												circuit_prefs[8].jugglers.push(juggler)
-												juggler.circuit = circuit_prefs[8].name
-
-											elsif circuit_prefs[9].jugglers.length >= 6
-												a=[]
-												circuit_prefs[9].jugglers.map do |player|
-													a << player.player_stats
-												end 
-												if juggler.player_stats > a.min
-													to_remove = circuit_prefs[9].jugglers.index{|x| x.player_stats == a.min}
-													add_back = circuit_prefs[9].jugglers.delete_at(to_remove)
-													collection.delete(collection.find{|x| x.name == add_back.name})
-													add_back.circuit = nil
-													collection.push(add_back)
-													puts "just killed someone"
-													circuit_prefs[9].jugglers.push(juggler)
-													juggler.circuit = circuit_prefs[9].name
-												else
-													puts "i'm being pushed to my limit"
-													last_resort = $circuits.find{|x| x.jugglers.length < 6}
-													last_resort.jugglers.push(juggler)
-													juggler.circuit = last_resort.name
-												end
-											else
-												circuit_prefs[9].jugglers.push(juggler)
-												juggler.circuit = circuit_prefs[9].name
-											end
-										else
-											circuit_prefs[8].jugglers.push(juggler)
-											juggler.circuit = circuit_prefs[8].name
-										end
-									else
-										circuit_prefs[7].jugglers.push(juggler)
-										juggler.circuit = circuit_prefs[7].name
-									end
-								else
-									circuit_prefs[6].jugglers.push(juggler)
-									juggler.circuit = circuit_prefs[6].name
-								end
-							else
-								circuit_prefs[5].jugglers.push(juggler)
-								juggler.circuit = circuit_prefs[5].name
-							end
-						else
-							circuit_prefs[4].jugglers.push(juggler)
-							juggler.circuit = circuit_prefs[4].name
-						end
-					else
-						circuit_prefs[3].jugglers.push(juggler)
-						juggler.circuit = circuit_prefs[3].name
-					end
-				else
-					circuit_prefs[2].jugglers.push(juggler)
-					juggler.circuit = circuit_prefs[2].name
+					circuit_prefs[pref_num].jugglers.push(juggler) #add current juggler to the jugglers newly-opened attribute of circuit
+					juggler.circuit = circuit_prefs[pref_num].name #change juggler's circuit attribute to the name of the circuit it is currently in
+				else #if the juggler's stats are not better than the lowest in the circuit (generally check next circuit if preference list and then go to last resort)
+					puts "i'm being pushed to my limit"
+					last_resort = $circuits.find{|x| x.jugglers.length < $limit} # find a circuit that has an empty spot   and circuit doesnt contain this juggler
+					last_resort.jugglers.push(juggler) #add juggler to the last_resort circuit
+					juggler.circuit = last_resort.name #change juggler's circuit attribute to the name of the last_resort circuit
 				end
-			else
-				circuit_prefs[1].jugglers.push(juggler)
-				juggler.circuit = circuit_prefs[1].name
+			else #when desired circuit hasnt reached capacity yet
+				circuit_prefs[pref_num].jugglers.push(juggler)  #add juggler to the last_resort circuit
+				juggler.circuit = circuit_prefs[pref_num].name #change juggler's circuit attribute to this circuits name 
 			end
-		else
-			circuit_prefs[0].jugglers.push(juggler)
-			juggler.circuit = circuit_prefs[0].name
+			pref_num += 1
 		end
 	end
 end
 
-
-# get data
+# get and parse the data
 parse_data_file('data.txt')
 
 # initial round of assigning
@@ -311,12 +151,8 @@ while $jugglers.find{|x| x.circuit == nil}
 	get_circuit_assignments(left_overs)
 end
 
-# write results to file
+# export results to the *results file
 record_results('results.txt')
 
-
-# first answer: 17,787
-
-# jugglers on circuit 1970: 
+# answer: 28,762
 # J2594 J2602 J4445 J4761 J6510 J7850
-# second answer: 28,762

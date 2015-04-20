@@ -1,5 +1,3 @@
-
-# so far unsuccessful attempt at refactoring large loop from other file
 # this file uses sample data
 
 require 'pry'
@@ -23,12 +21,6 @@ class Juggler
 	def player_stats
 		self.coordination + self.endurance + self.pizzazz
 	end
-
-	# def find_preferred_circuits
-	# 	self.prefs.each do |pref|
-	# 		$circuits.find{|x| x.name == juggler.pref}
-	# 	end
-	# end
 end
 
 
@@ -39,7 +31,7 @@ class Circuit
 		@coordination = args[:coordination]	
 		@endurance = args[:endurance]	
 		@pizzazz = args[:pizzazz]
-		@jugglers = [] #limit 6
+		@jugglers = []
 	end
 
 	def circuit_stats
@@ -81,7 +73,8 @@ def parse_data_file(file)
 	get_limit
 end
 
-def record_results(file)# write results to file
+# method to write results to file
+def record_results(file)
 	$circuits.each do |circuit|
 		File.open(file, "a") do |f|
 			f.puts "\n" + circuit.name
@@ -92,10 +85,12 @@ def record_results(file)# write results to file
 	end
 end
 
+# method to get the limit of jugglers on a team
 def get_limit
 	$limit = $jugglers.length / $circuits.length
 end
 
+# assign jugglers to teams
 def get_circuit_assignments(collection)
 	collection.map do |juggler|
 		circuit_prefs = []
@@ -111,46 +106,43 @@ def get_circuit_assignments(collection)
 			skill_totals << circuit.circuit_stats
 		end
 
-		# add jugglers to the circuit.jugglers // also find a circuit to place juggler in, firstly by preference
-		circuit_prefs.map do |circuit| #take each circuit in the juggler's preferences
-			if circuit.jugglers.length >= $limit #if this circuit has reached its capacity, check if player is better than any of the current players in the circuit
-				a = []	#get the stats of the players in that circuit
-				circuit.jugglers.map do |player|
-					a << player.player_stats
-				end
-				if juggler.player_stats > a.min  #if the juggler's stats are better than the lowest in the circuit
-					to_remove = circuit.jugglers.index{|x| x.player_stats == a.min} #find the index of the lowest to remove
-					add_back = circuit.jugglers.delete_at(to_remove) #store the object of that player
-					circuit.jugglers.delete_at(to_remove)  #remove the player from the circuit
+		pref_num = 0
+		# while the juggler.circuit attribute is nil and their preference number is less than the amount theyve requested
+		while (juggler.circuit == nil) && (pref_num <= circuit_prefs.length)
+			if circuit_prefs[pref_num].jugglers.length >= $limit #if this circuit has reached its capacity, check if player is better than any of the current players in the circuit
+			a=[] #get the stats of the players in that circuit
+			circuit_prefs[pref_num].jugglers.map do |player|
+				a << player.player_stats
+			end
+				if juggler.player_stats > a.min #if the juggler's stats are better than the lowest in the circuit
+					to_remove = circuit_prefs[pref_num].jugglers.index{|x| x.player_stats == a.min} #find the index of the lowest to remove
+					add_back = circuit_prefs[pref_num].jugglers.delete_at(to_remove) #store the object of that player
 					collection.delete(collection.find{|x| x.name == add_back.name}) #remove it from the collection of all players
-					add_back.circuit = nil #chagne circuit attribute of that removed player to nil
+					add_back.circuit = nil #change circuit attribute of that removed player to nil
 					collection.push(add_back) #add player back into colleciton so that it gets run and placed again
-					puts "youve been replaced"
-					circuit.jugglers.push(juggler) #add current juggler to the jugglers newly-opened attribute of circuit
-					juggler.circuit = circuit.name #change juggler's circuit attribute to the name of the circuit it is currently in
+					puts "just killed someone"
+					circuit_prefs[pref_num].jugglers.push(juggler) #add current juggler to the jugglers newly-opened attribute of circuit
+					juggler.circuit = circuit_prefs[pref_num].name #change juggler's circuit attribute to the name of the circuit it is currently in
 				else #if the juggler's stats are not better than the lowest in the circuit (generally check next circuit if preference list and then go to last resort)
 					puts "i'm being pushed to my limit"
-					# Pry.start(binding)
 					last_resort = $circuits.find{|x| x.jugglers.length < $limit} # find a circuit that has an empty spot   and circuit doesnt contain this juggler
 					last_resort.jugglers.push(juggler) #add juggler to the last_resort circuit
 					juggler.circuit = last_resort.name #change juggler's circuit attribute to the name of the last_resort circuit
 				end
 			else #when desired circuit hasnt reached capacity yet
-				puts "new assigned"
-				circuit.jugglers.push(juggler) #add juggler to the last_resort circuit
-				juggler.circuit = circuit.name #change juggler's circuit attribute to this circuits name 
+				circuit_prefs[pref_num].jugglers.push(juggler)  #add juggler to the last_resort circuit
+				juggler.circuit = circuit_prefs[pref_num].name #change juggler's circuit attribute to this circuits name 
 			end
+			pref_num += 1
 		end
-
 	end
 end
 
-
+# get and parse the data
 parse_data_file('sample-data.txt')
+
 # initial round of assigning
 get_circuit_assignments($jugglers)
-
-Pry.start(binding)
 
 # loop until all jugglers are on teams
 while $jugglers.find{|x| x.circuit == nil}
@@ -158,4 +150,5 @@ while $jugglers.find{|x| x.circuit == nil}
 	get_circuit_assignments(left_overs)
 end
 
+# export results to the *results file
 record_results('sample-results.txt')
