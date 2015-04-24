@@ -1,38 +1,23 @@
 I made this json_maker file to go through large text files that I needed to have access to through JavaScript. The text files included data regarding a large quantity of questions and answers from the Family Feud version on Super Nintendo. The format of the Q's and A's in the text file were as follows:
 
+
 Tell me something specific you have lost more than once
-
 Keys..................63
-
 Money..................7
-
 Weight.................5
-
 Contact Lens...........4
-
 Eyeglasses.............4
-
 Wallet.................3
-
 Earring................2
 
-
 Name a toy you always see in pictures of Santa's Workshop
-
 Doll..................39
-
 Stuffed Animal........13
-
 Train.................11
-
 Rocking Horse..........9
-
 Toy Soldier............9
-
 Drum...................4
-
 Ball...................3
-
 Wagon..................3
 
 
