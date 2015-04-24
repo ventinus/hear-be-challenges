@@ -43,30 +43,6 @@ def parse_data_file(file)
 	end
 end
 
-# def record_results(file)
-# 	last_question = $questions_collection.last
-# 	$questions_collection.each do |quest|
-# 		last_answer = quest.answers.last
-# 		File.open(file, "a") do |f|
-# 			f.write "{'Question': '#{quest.question}',\n"
-# 			f.write "'Answers': ["
-# 			quest.answers.each do |answer|
-# 				f.write "{'name': '#{answer.name}',\n"
-# 				if answer === last_answer
-# 					f.write "'votes': #{answer.votes}\n}\n]}"
-# 				else
-# 					f.write "'votes': #{answer.votes}\n},\n"
-# 				end
-# 			end
-# 			if quest === last_question
-# 				f.write "\n"				
-# 			else
-# 				f.write ",\n"
-# 			end
-# 		end
-# 	end
-# end
-
 def record_results(file)
 	last_question = $questions_collection.last
 	$questions_collection.each do |quest|
