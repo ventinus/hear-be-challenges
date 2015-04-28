@@ -1,5 +1,6 @@
 I made this json_maker file to go through large text files that I needed to have access to through JavaScript. The text files included data regarding a large quantity of questions and answers from the Family Feud version on Super Nintendo. The format of the Q's and A's in the text file were as follows:
 
+
 Tell me something specific you have lost more than once
 
 Keys..................63
