@@ -9,7 +9,15 @@
 	<!-- using to display content on top of the page -->
 		<img src="images/company-logo.jpg">
 		<ul>
-			<li>CONVERGENCE</li>
+			<li>
+				CONVERGENCE
+				<!-- sub-menu of convergence -->
+				<ul>
+					<li>First</li>
+					<li>Second</li>
+					<li>Third</li>
+				</ul>
+			</li>
 			<li>TEAM</li>
 			<li>INNOVATION</li>
 			<li>CASE STUDIES</li>
@@ -17,7 +25,9 @@
 		</ul>
 	</div>
 	<div id="full-content">
+	<!-- the main body of the site -->
 		<div id="full-header" class="group">
+		<!-- upper portion of content which includs headers, titles, and video box -->
 			<div id="company-header">
 				<div id="title">
 					<h1>Gurarabititurpis:</h1>
@@ -26,6 +36,7 @@
 				<div id="company-tag">
 					<div id="company-tag-box"></div>
 						<div id="tag-top" class="group">
+						<!-- class="group" are grouped floated divs for clearfixing -->
 							<div id="box"></div>
 							<h2>company tag line</h2>
 						</div>
@@ -34,7 +45,10 @@
 						</div>
 				</div>
 			</div>
-			<div id="header-video"></div>
+			<div id="header-video">
+				<!-- <iframe src="https://www.youtube.com/watch?v=wJDgNEt4YQ8" seamless></iframe> -->
+				<img src="images/company-logo.jpg">
+			</div>
 		</div>
 		<div id="body" class="group">
 			<div id="content-left">
@@ -68,7 +82,5 @@
 			<li>PRESENTATIONS</li>
 		</ul>
 	</footer>
-	<script src="scripts/jquery-1.11.2.min.js"></script>
-	<script src="scripts/scripts.js"></script>
 </body>
 </html>
