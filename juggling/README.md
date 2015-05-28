@@ -32,3 +32,8 @@ C1 J9 C1:23 C2:86 C0:94, J8 C1:21 C0:100 C2:80, J7 C2:75 C1:20 C0:106, J1 C0:119
 C0 J5 C0:161 C2:112 C1:26, J11 C0:154 C1:27 C2:108, J2 C0:128 C2:68 C1:18, J4 C0:122 C2:106 C1:23
 
 Run your program on this input file which contains 2000 circuits and 12000 jugglers. Take the sum of the names of the jugglers (taking off the leading letter J) that are assigned to circuit C1970. So for example if the jugglers assigned to circuit C1970 were J1,J2,J3,J4,J5 and J6
+
+
+
+
+Think about optimizing the run-time by sorting the jugglers by skills first?
